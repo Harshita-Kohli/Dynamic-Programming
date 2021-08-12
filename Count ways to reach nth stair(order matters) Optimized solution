@@ -1,0 +1,26 @@
+Approach: This method efficiently implements Dynamic Programming approach along with sliding window.
+In this approach for the ith stair, we keep a window of sum of last m possible stairs from which we can climb to the ith stair. Instead of running an inner loop, 
+we maintain the result of the inner loop in a temporary variable.
+We remove the elements of the previous window and add the element of the current window and update the sum.
+TIME COMPLEXITY:O(N)
+SPACE COMPLEXITY:O(N)
+
+int Solution::climbStairs(int A) {
+    
+    int t[A+1];
+    t[0] = 1;
+    int temp = 0;
+    for(int i = 1;i<A+1;i++)
+    {
+        int s = i-2-1;//start index of sliding window
+        int e = i-1; //end index of sliding window
+        if(s>=0)
+        {
+            temp -=t[s]; //removing the starting index value from temp
+
+        }
+        temp+=t[e]; //adding the ending index value to temp
+        t[i] = temp;
+    }
+    return t[A];
+}
