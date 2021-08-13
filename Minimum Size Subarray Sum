@@ -1,0 +1,63 @@
+Minimum Size Subarray Size
+Given an array of positive integers nums and a positive integer target, return the minimal length of a contiguous subarray 
+[numsl, numsl+1, ..., numsr-1, numsr] of which the sum is greater than or equal to target. If there is no such subarray, return 0 instead.
+Example 1:
+
+Input: target = 7, nums = [2,3,1,2,4,3]
+Output: 2
+Explanation: The subarray [4,3] has the minimal length under the problem constraint.
+Example 2:
+
+Input: target = 4, nums = [1,4,4]
+Output: 1
+Example 3:
+
+Input: target = 11, nums = [1,1,1,1,1,1,1,1]
+Output: 0
+ 
+
+Constraints:
+
+1 <= target <= 109
+1 <= nums.length <= 105
+1 <= nums[i] <= 105
+ 
+
+Follow up: If you have figured out the O(n) solution, try coding another solution of which the time complexity is O(n log(n)).
+<-------------------------------------------------------------------------------------------------------------------------------->
+O(n) solution:
+class Solution {
+public:
+    int minSubArrayLen(int target, vector<int>& nums) {
+        int n = nums.size();
+        int s = 0;
+        int e = 0;
+        int sum = 0;
+        int minlen = INT_MAX;
+        while(e<n)
+        {
+            sum+=nums[e];
+           // cout<<sum<<" ";
+            if(sum<target) 
+            {
+               e++; //expand the window size to achieve the target 
+            }
+            else
+            {
+                while(sum>=target)
+                {
+                   // cout<<sum;
+                    minlen = min(minlen,e-s+1);  
+                    sum-=nums[s]; //since we have achieved sum>=target,we can safely subtract the ans contributed by s pointer. 
+                                 //Then increment s pointer to get a smaller size window that has sum>=target
+                    s++;
+
+                }
+                e++;
+            }
+            
+        }
+        if(minlen == INT_MAX) return 0;
+        else return minlen;
+    }
+};
