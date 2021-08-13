@@ -1,0 +1,54 @@
+Given an integer array nums, return the length of the longest strictly increasing subsequence.
+
+A subsequence is a sequence that can be derived from an array by deleting some or no elements without changing the order of the remaining elements. For example, [3,6,2,7] is a subsequence of the array [0,3,1,6,2,2,7].
+
+ Example 1:
+Input: nums = [10,9,2,5,3,7,101,18]
+Output: 4
+Explanation: The longest increasing subsequence is [2,3,7,101], therefore the length is 4.
+
+Example 2:
+Input: nums = [0,1,0,3,2,3]
+Output: 4
+
+Example 3:
+Input: nums = [7,7,7,7,7,7,7]
+Output: 1
+ 
+Constraints:
+
+1 <= nums.length <= 2500
+-104 <= nums[i] <= 104
+ 
+Follow up: Can you come up with an algorithm that runs in O(n log(n)) time complexity?
+<--------------------------------------------------------------------------------------------->
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+       int n = nums.size();
+        if(n==1) return 1;
+        int t[n+1];
+        int ans = 0;
+        t[0] = 1; //initialisation
+        //bottom up approach:O(n^2)approach
+        for(int i = 1;i<n;i++)
+        {
+            int curmax = 0;
+            for(int j = 0;j<i;j++) //loop over all indices smaller than i
+            {
+                if(nums[j]<nums[i])
+                {
+                   curmax = max(curmax,t[j]); //curmax stores the maximum out of curmax and LIS length ending at j 
+                }
+               
+            }
+            //after coming out of inner for loop ie comparing with all nums[j] and finding maximum out of all LISs
+             t[i] = curmax+1; //because now we have one more number ie nums[i] which contributes to lis                                                                                                  
+                if(t[i]>ans)
+                {
+                    ans = t[i]; //we update our final ans whenever t[i] >previous ans. This way we avoid looping over the t[] array at the end to compute the maximum out of t[i] to get LIS 
+                }
+        }
+        return ans;
+    }
+};
