@@ -1,0 +1,74 @@
+Problem Description
+You are given A eggs, and you have access to a building with B floors from 1 to B.
+Each egg is identical in function, and if an egg breaks, you cannot drop it again.
+You know that there exists a floor C with 0 <= C <= B  such that any egg dropped at a floor higher than C will break, and any egg dropped at or below floor C will not break.
+Each move, you may take an egg (if you have an unbroken one) and drop it from any floor X (with 1 <= X <= B). 
+Your goal is to know with certainty what the value of C is.
+What is the minimum number of moves that you need to know with certainty what C is, regardless of the initial value of C
+
+Problem Constraints
+1 <= A <= 100
+1 <= B <= 104
+
+Input Format
+First Argument is an integer A denoting number of eggs.
+Second Argument is an integer B denoting number of floors.
+
+Output Format
+Return an integer denoting the Minimum number of moves.
+
+Example Input
+Input 1: A = 1 B = 2
+Input 2: A = 2 B = 10
+
+Example Output
+Output 1: 2
+Output 2: 4 
+Example Explanation
+Explanation 1:
+
+ Drop the egg from floor 1.  If it breaks, we know with certainty that F = 0.
+ Otherwise, drop the egg from floor 2.  If it breaks, we know with certainty that F = 1.
+ If it didn't break, then we know with certainty F = 2.
+ Hence, we needed 2 moves in the worst case to know what F is with certainty.
+ <--------------------------------------------------------------------------------------------------->
+ 
+int t[101][10001];//globally declare t matrix
+int helper(int e, int f)
+{
+    //base case
+    if(e==1) return f; //if no of eggs is 1, then in worst case, we need minimum of f attempts
+    if(f==1 || f==0) return f;//if f==1, then we can have a single attempt, if f==0, then we need 0 attempts because there is no floor
+    int temp;
+    int minim = INT_MAX;
+
+    if(t[e][f]!=-1) //avoid recomputation of overlapping subproblems
+    {
+        return t[e][f];
+    }
+
+    int l = 1;
+    int h = f;
+    while(l<=h)
+    {
+        int mid = (l+h)/2;
+        int lower_sub = helper(e-1,mid-1); //if egg breaks, then we need not check upper floors, so we only check the lower floors to find critical floor
+        int upper_sub = helper(e, f-mid);//if egg does not break, then we don't check lower floors, instead, we check the upper floors to find a better critical floor
+        temp = 1+max(lower_sub,upper_sub);//we take max because we need to find the worst case out of the 2 cases, then add 1 attempt to it
+        if(lower_sub<upper_sub)//if upper_subpart is the worst case,
+        {
+            l = mid+1;// then we need not go to the lower floors, so we reduce our problem to upper subpart
+        }
+        else //if lower subpart is worst case,
+        {
+            h = mid-1;//then we need not go to the uppersubpart, so we reduce our problem to lower floors only
+        }
+        minim = min(minim, temp);//calculate min out of temp ans,, we take min of all worst case answers
+    }
+    return t[e][f] = minim;//save the anser in dp table before returning
+}
+
+int Solution::solve(int A, int B) {
+ memset(t,-1,sizeof(t));//initialise t marix with -1
+ return helper(A,B);
+}
